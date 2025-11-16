@@ -1,4 +1,6 @@
-﻿namespace SurveyBasket.Models;
+﻿using SurveyBasket.Contracts.Responses;
+
+namespace SurveyBasket.Models;
 public class Poll
 {
     public int Id { get; set; }

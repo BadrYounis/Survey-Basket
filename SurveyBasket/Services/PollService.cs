@@ -1,6 +1,4 @@
-﻿using SurveyBasket.Models;
-
-namespace SurveyBasket.Services;
+﻿namespace SurveyBasket.Services;
 public class PollService : IPollService
 {
     private static readonly List<Poll> _polls = [
@@ -22,7 +20,7 @@ public class PollService : IPollService
     public bool Update(int id, Poll poll)
     {
         var currentPoll = Get(id);
-        if(currentPoll is null)
+        if (currentPoll is null)
             return false;
 
         currentPoll.Title = poll.Title;
