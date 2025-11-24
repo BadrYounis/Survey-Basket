@@ -12,7 +12,7 @@ public static class DependencyInjection
     {
         services.AddControllers();
 
-        services.AddAuthConfig();
+        services.AddAuthConfig(configuration);
 
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -54,12 +54,24 @@ public static class DependencyInjection
 
         return services;
     }
-    private static IServiceCollection AddAuthConfig(this IServiceCollection services)
+    private static IServiceCollection AddAuthConfig(this IServiceCollection services,
+        IConfiguration _configuration)
     {
-        services.AddSingleton<IJwtProvider, JwtProvider>();  // We Need Only 1 Instance Through Lifetime Of Application
-
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        //Jwt Configurations
+        services.AddSingleton<IJwtProvider, JwtProvider>();  // We Need Only 1 Instance Through Lifetime Of Application
+
+        // Options Pattern Configurations
+        //services.Configure<JwtOptions>(_configuration.GetSection(nameof(JwtOptions)));
+
+        services.AddOptions<JwtOptions>()
+            .BindConfiguration(nameof(JwtOptions))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var _jwtsettings = _configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
 
         // When Using [Authorize] Attribute In Controller or Action => Will Know That We Use Bearer [Bearer Tokens]
         services.AddAuthentication(options =>
@@ -76,9 +88,9 @@ public static class DependencyInjection
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("m13VHAFTfi2MxEMqZVPjqsUqqvfSmHY4")),
-                ValidIssuer = "SurveyBasketApp",
-                ValidAudience = "SurveyBasketApp Users",
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtsettings?.Key!)),
+                ValidIssuer = _jwtsettings?.Issuer,
+                ValidAudience = _jwtsettings?.Audience
             };
         });
         

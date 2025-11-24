@@ -4,8 +4,9 @@ using System.Security.Claims;
 using System.Text;
 
 namespace SurveyBasket.Authentication;
-public class JwtProvider : IJwtProvider
+public class JwtProvider(IOptions<JwtOptions> jwtOptions) : IJwtProvider
 {
+    private readonly JwtOptions _jwtOptions = jwtOptions.Value;
     public (string token, int expiresIn) GenerateToken(ApplicationUser user)
     {
         //[1] Add Claims That Are Found Inside Token
@@ -18,22 +19,45 @@ public class JwtProvider : IJwtProvider
         ];
 
         //[2] Generate Key That Are Used To Encode and Decode Token
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("m13VHAFTfi2MxEMqZVPjqsUqqvfSmHY4"));
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
 
         //[3] JWT should be cryptographically signed, and with which algorithm and key.
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
-        var expiresIn = 30;
-
         //[4] Generate Token
         var token = new JwtSecurityToken(
-             issuer: "SurveyBasketApp",
-             audience: "SurveyBasketApp Users",
+             issuer: _jwtOptions.Issuer,
+             audience: _jwtOptions.Audience,
              claims: claims,
-             expires: DateTime.UtcNow.AddMinutes(expiresIn),
+             expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiryMinutes),
              signingCredentials: signingCredentials          
         );
 
-        return (new JwtSecurityTokenHandler().WriteToken(token), expiresIn: expiresIn * 60);
+        return (new JwtSecurityTokenHandler().WriteToken(token), expiresIn: _jwtOptions.ExpiryMinutes * 60);
+    }
+    public string? ValidateToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                IssuerSigningKey = symmetricSecurityKey,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken) validatedToken;
+
+            return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
