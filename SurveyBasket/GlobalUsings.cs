@@ -7,8 +7,11 @@ global using FluentValidation;
 global using MapsterMapper;
 global using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 global using System.Reflection;
+
 global using SurveyBasket.Persistence;
 global using SurveyBasket;
 global using SurveyBasket.Entities;
 global using SurveyBasket.Services;
 global using SurveyBasket.Contracts.Authentication;
+global using SurveyBasket.Abstractions;
+global using SurveyBasket.Errors;
