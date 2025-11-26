@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using SurveyBasket.Contracts.Polls;
 
 namespace SurveyBasket.Controllers;
@@ -23,7 +24,8 @@ public class PollsController(IPollService _pollService) : ControllerBase
 
         return result.IsSuccess
             ? Ok(result.Value)
-            : Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
+            : result.ToProblem();
+            //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
     }
 
     [HttpPost("")]
@@ -43,7 +45,8 @@ public class PollsController(IPollService _pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent()
-            : Problem(statusCode:StatusCodes.Status404NotFound, title:result.Error.Code, detail:result.Error.Describtion);
+            : result.ToProblem();
+            //: Problem(statusCode:StatusCodes.Status404NotFound, title:result.Error.Code, detail:result.Error.Describtion);
     }
 
     [HttpDelete("{id}")]
@@ -53,7 +56,8 @@ public class PollsController(IPollService _pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent()
-            : Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
+            : result.ToProblem();
+            //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
     }
     
     [HttpPut("{id}/togglePublish")]
@@ -63,6 +67,7 @@ public class PollsController(IPollService _pollService) : ControllerBase
 
         return result.IsSuccess
             ? NoContent()
-            : Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
+            : result.ToProblem();
+            //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
     }
 }
