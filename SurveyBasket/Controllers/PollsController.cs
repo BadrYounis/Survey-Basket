@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using SurveyBasket.Contracts.Polls;
 
 namespace SurveyBasket.Controllers;
@@ -33,8 +32,10 @@ public class PollsController(IPollService _pollService) : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await _pollService.AddAsync(request, cancellationToken);
-    
-        return CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value);
+
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
+            : result.ToProblem();
     }
 
     [HttpPut("{id}")]

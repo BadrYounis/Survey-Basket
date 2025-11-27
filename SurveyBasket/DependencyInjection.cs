@@ -34,8 +34,12 @@ public static class DependencyInjection
             .AddMapsterConfig()
             .AddFluentValidationConfig();
 
-        services.AddScoped<IPollService, PollService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IPollService, PollService>();
+
+        //Add Exception Handling
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();  //Without calling it, ASP.NET Core does not automatically format errors using the Problem Details standard.
 
         return services;
     }
