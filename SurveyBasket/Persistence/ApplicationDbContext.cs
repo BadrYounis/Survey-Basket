@@ -10,6 +10,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> _option
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+        var cascadeFks = modelBuilder.Model
+            .GetEntityTypes()
+            .SelectMany(t => t.GetForeignKeys())
+            .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership);
+
+        foreach (var fk in cascadeFks)
+            fk.DeleteBehavior = DeleteBehavior.Restrict;
+        
         base.OnModelCreating(modelBuilder);
     }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -32,5 +40,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> _option
         }
         return base.SaveChangesAsync(cancellationToken);
     }
+    public DbSet<Answer> Answers { get; set; }
     public DbSet<Poll> Polls { get; set; }
+    public DbSet<Question> Questions { get; set; }
 }
