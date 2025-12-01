@@ -1,4 +1,5 @@
-﻿using SurveyBasket.Contracts.Questions;
+﻿using SurveyBasket.Contracts.Answers;
+using SurveyBasket.Contracts.Questions;
 
 namespace SurveyBasket.Services;
 public class QuestionService(ApplicationDbContext _context) : IQuestionService
@@ -18,6 +19,34 @@ public class QuestionService(ApplicationDbContext _context) : IQuestionService
             //    q.Content,
             //    q.Answers.Select(a => new AnswerResponse(a.Id, a.Content))))
             .ProjectToType<QuestionResponse>()
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return Result.Success<IEnumerable<QuestionResponse>>(questions);
+    }
+    public async Task<Result<IEnumerable<QuestionResponse>>> GetAvailableAsync(int pollId, string userId, CancellationToken cancellationToken = default)
+    {
+        //Checks if user votes for this poll before or not
+        var hasVote = await _context.Votes.AnyAsync(x => x.PollId == pollId && x.UserId == userId, cancellationToken);
+
+        if (hasVote)
+            return Result.Failure<IEnumerable<QuestionResponse>>(VoteErrors.DuplicatedVote);
+
+        //Checks if poll available for voting or not
+        var pollIsExists = await _context.Polls.AnyAsync(x => x.Id == pollId && x.IsPublished
+            && x.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow) && x.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow), cancellationToken);
+
+        if (!pollIsExists)
+            return Result.Failure<IEnumerable<QuestionResponse>>(PollErrors.PollNotFound);
+
+        var questions = await _context.Questions
+            .Where(x => x.PollId == pollId && x.IsActive)
+            .Include(x => x.Answers)
+            .Select(q => new QuestionResponse(
+                q.Id,
+                q.Content,
+                q.Answers.Where(a => a.IsActive).Select(a => new AnswerResponse(a.Id, a.Content))
+            ))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -71,6 +100,7 @@ public class QuestionService(ApplicationDbContext _context) : IQuestionService
         if (questionIsExists)
             return Result.Failure(QuestionErrors.DuplicatedQuestionContent);
 
+        // return the question and its answers from DB using Eager Loading
         var question = await _context.Questions
             .Include(x => x.Answers)
             .SingleOrDefaultAsync(x => x.PollId == pollId && x.Id == id, cancellationToken);

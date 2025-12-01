@@ -1,15 +1,19 @@
-﻿using Azure.Core;
-using SurveyBasket.Contracts.Polls;
+﻿using SurveyBasket.Contracts.Polls;
 
 namespace SurveyBasket.Services;
 public class PollService(ApplicationDbContext _context) : IPollService
 {
-    public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        var polls = await _context.Polls.AsNoTracking().ToListAsync(cancellationToken);
-
-        return polls.Adapt<IEnumerable<PollResponse>>();
-    }
+    public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken = default) =>
+       await _context.Polls
+        .AsNoTracking()
+        .ProjectToType<PollResponse>()
+        .ToListAsync(cancellationToken);
+    public async Task<IEnumerable<PollResponse>> GetCurrentAsync(CancellationToken cancellationToken = default) =>
+       await _context.Polls
+        .Where(x => x.IsPublished && x.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow) && x.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow))
+        .AsNoTracking()
+        .ProjectToType<PollResponse>()
+        .ToListAsync(cancellationToken);
     public async Task<Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
     {
         var poll = await _context.Polls.FindAsync(id, cancellationToken);
@@ -22,7 +26,7 @@ public class PollService(ApplicationDbContext _context) : IPollService
     {
         var isExistingTitle = await _context.Polls.AnyAsync(x => x.Title == request.Title, cancellationToken: cancellationToken);
         if (isExistingTitle)
-           return Result.Failure<PollResponse>(PollErrors.DuplicatedPollTitle);
+            return Result.Failure<PollResponse>(PollErrors.DuplicatedPollTitle);
 
         var poll = request.Adapt<Poll>();
 

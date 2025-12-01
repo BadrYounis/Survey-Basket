@@ -6,6 +6,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> _option
     IdentityDbContext<ApplicationUser>(_options)
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    public DbSet<Answer> Answers { get; set; }
+    public DbSet<Poll> Polls { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<Vote> Votes { get; set; }
+    public DbSet<VoteAnswer> VoteAnswers { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -26,7 +31,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> _option
 
         foreach (var entryEntity in entries)
         {
-            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId()!;
 
             if (entryEntity.State == EntityState.Added)
             {
@@ -40,7 +45,4 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> _option
         }
         return base.SaveChangesAsync(cancellationToken);
     }
-    public DbSet<Answer> Answers { get; set; }
-    public DbSet<Poll> Polls { get; set; }
-    public DbSet<Question> Questions { get; set; }
 }
