@@ -1,0 +1,63 @@
+12/07/2025 00:13:57 +02:00Now listening on: "https://localhost:7147"
+12/07/2025 00:13:57 +02:00Now listening on: "http://localhost:5181"
+12/07/2025 00:13:57 +02:00Application started. Press Ctrl+C to shut down.
+12/07/2025 00:13:57 +02:00Hosting environment: "Development"
+12/07/2025 00:13:57 +02:00Content root path: "D:\Comeback\APIs\SurveyBasket\SurveyBasket"
+12/07/2025 00:14:46 +02:00Hello from auth controller logger
+12/07/2025 00:14:47 +02:00Executed DbCommand ("41"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a0].[Id], [a0].[AccessFailedCount], [a0].[ConcurrencyStamp], [a0].[Email], [a0].[EmailConfirmed], [a0].[FirstName], [a0].[LastName], [a0].[LockoutEnabled], [a0].[LockoutEnd], [a0].[NormalizedEmail], [a0].[NormalizedUserName], [a0].[PasswordHash], [a0].[PhoneNumber], [a0].[PhoneNumberConfirmed], [a0].[SecurityStamp], [a0].[TwoFactorEnabled], [a0].[UserName], [r].[UserId], [r].[Id], [r].[CreatedOn], [r].[ExpiresOn], [r].[RevokedOn], [r].[Token]
+FROM (
+    SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[LastName], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+    FROM [AspNetUsers] AS [a]
+    WHERE [a].[NormalizedEmail] = @__normalizedEmail_0
+) AS [a0]
+LEFT JOIN [RefreshTokens] AS [r] ON [a0].[Id] = [r].[UserId]
+ORDER BY [a0].[Id], [r].[UserId]"
+12/07/2025 00:20:10 +02:00Now listening on: "https://localhost:7147"
+12/07/2025 00:20:10 +02:00Now listening on: "http://localhost:5181"
+12/07/2025 00:20:10 +02:00Application started. Press Ctrl+C to shut down.
+12/07/2025 00:20:10 +02:00Hosting environment: "Development"
+12/07/2025 00:20:10 +02:00Content root path: "D:\Comeback\APIs\SurveyBasket\SurveyBasket"
+12/07/2025 00:20:27 +02:00Hello from auth controller logger
+12/07/2025 00:20:28 +02:00Executed DbCommand ("46"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a0].[Id], [a0].[AccessFailedCount], [a0].[ConcurrencyStamp], [a0].[Email], [a0].[EmailConfirmed], [a0].[FirstName], [a0].[LastName], [a0].[LockoutEnabled], [a0].[LockoutEnd], [a0].[NormalizedEmail], [a0].[NormalizedUserName], [a0].[PasswordHash], [a0].[PhoneNumber], [a0].[PhoneNumberConfirmed], [a0].[SecurityStamp], [a0].[TwoFactorEnabled], [a0].[UserName], [r].[UserId], [r].[Id], [r].[CreatedOn], [r].[ExpiresOn], [r].[RevokedOn], [r].[Token]
+FROM (
+    SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[LastName], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+    FROM [AspNetUsers] AS [a]
+    WHERE [a].[NormalizedEmail] = @__normalizedEmail_0
+) AS [a0]
+LEFT JOIN [RefreshTokens] AS [r] ON [a0].[Id] = [r].[UserId]
+ORDER BY [a0].[Id], [r].[UserId]"
+12/07/2025 00:20:29 +02:00HTTP "POST" "/Auth" responded 401 in 1318.7765 ms
+12/07/2025 00:20:47 +02:00Now listening on: "https://localhost:7147"
+12/07/2025 00:20:47 +02:00Now listening on: "http://localhost:5181"
+12/07/2025 00:20:47 +02:00Application started. Press Ctrl+C to shut down.
+12/07/2025 00:20:47 +02:00Hosting environment: "Development"
+12/07/2025 00:20:47 +02:00Content root path: "D:\Comeback\APIs\SurveyBasket\SurveyBasket"
+12/07/2025 00:21:00 +02:00Hello from auth controller logger
+12/07/2025 00:21:01 +02:00Executed DbCommand ("31"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a0].[Id], [a0].[AccessFailedCount], [a0].[ConcurrencyStamp], [a0].[Email], [a0].[EmailConfirmed], [a0].[FirstName], [a0].[LastName], [a0].[LockoutEnabled], [a0].[LockoutEnd], [a0].[NormalizedEmail], [a0].[NormalizedUserName], [a0].[PasswordHash], [a0].[PhoneNumber], [a0].[PhoneNumberConfirmed], [a0].[SecurityStamp], [a0].[TwoFactorEnabled], [a0].[UserName], [r].[UserId], [r].[Id], [r].[CreatedOn], [r].[ExpiresOn], [r].[RevokedOn], [r].[Token]
+FROM (
+    SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[LastName], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+    FROM [AspNetUsers] AS [a]
+    WHERE [a].[NormalizedEmail] = @__normalizedEmail_0
+) AS [a0]
+LEFT JOIN [RefreshTokens] AS [r] ON [a0].[Id] = [r].[UserId]
+ORDER BY [a0].[Id], [r].[UserId]"
+12/07/2025 00:21:01 +02:00HTTP "POST" "/Auth" responded 401 in 1240.9397 ms
+12/07/2025 00:21:15 +02:00Now listening on: "https://localhost:7147"
+12/07/2025 00:21:15 +02:00Now listening on: "http://localhost:5181"
+12/07/2025 00:21:15 +02:00Application started. Press Ctrl+C to shut down.
+12/07/2025 00:21:15 +02:00Hosting environment: "Development"
+12/07/2025 00:21:15 +02:00Content root path: "D:\Comeback\APIs\SurveyBasket\SurveyBasket"
+12/07/2025 00:21:32 +02:00Hello from auth controller logger
+12/07/2025 00:21:33 +02:00Executed DbCommand ("40"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a0].[Id], [a0].[AccessFailedCount], [a0].[ConcurrencyStamp], [a0].[Email], [a0].[EmailConfirmed], [a0].[FirstName], [a0].[LastName], [a0].[LockoutEnabled], [a0].[LockoutEnd], [a0].[NormalizedEmail], [a0].[NormalizedUserName], [a0].[PasswordHash], [a0].[PhoneNumber], [a0].[PhoneNumberConfirmed], [a0].[SecurityStamp], [a0].[TwoFactorEnabled], [a0].[UserName], [r].[UserId], [r].[Id], [r].[CreatedOn], [r].[ExpiresOn], [r].[RevokedOn], [r].[Token]
+FROM (
+    SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[LastName], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+    FROM [AspNetUsers] AS [a]
+    WHERE [a].[NormalizedEmail] = @__normalizedEmail_0
+) AS [a0]
+LEFT JOIN [RefreshTokens] AS [r] ON [a0].[Id] = [r].[UserId]
+ORDER BY [a0].[Id], [r].[UserId]"
+12/07/2025 00:21:33 +02:00HTTP "POST" "/Auth" responded 401 in 1403.9242 ms
