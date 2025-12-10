@@ -1,8 +1,11 @@
 ﻿namespace SurveyBasket.Controllers;
 [Route("[controller]")]
 [ApiController]
-public class AuthController(IAuthService _authService, ILogger<AuthController> _logger) : ControllerBase
+public class AuthController(IAuthService authService, ILogger<AuthController> logger) : ControllerBase
 {
+    private readonly IAuthService _authService = authService;
+    private readonly ILogger<AuthController> _logger = logger;
+
     [HttpPost("")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {

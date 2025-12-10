@@ -1,8 +1,9 @@
 ﻿using SurveyBasket.Contracts.Votes;
 
 namespace SurveyBasket.Services;
-public class VoteService(ApplicationDbContext _context) : IVoteService
+public class VoteService(ApplicationDbContext context) : IVoteService
 {
+    private readonly ApplicationDbContext _context = context;
     public async Task<Result> AddAsync(int pollId, string userId, VoteRequest request, CancellationToken cancellationToken = default)
     {
         //Checks if user votes for this poll before or not

@@ -7,7 +7,6 @@ namespace SurveyBasket.Controllers;
 [Authorize]
 public class VotesController(IQuestionService _questionService, IVoteService _voteService) : ControllerBase
 {
-
     [HttpGet("")]
     public async Task<IActionResult> Start([FromRoute] int pollId, CancellationToken cancellationToken)
     {

@@ -1,6 +1,8 @@
 ﻿namespace SurveyBasket.Services;
-public class ResultService(ApplicationDbContext _context) : IResultService
+public class ResultService(ApplicationDbContext context) : IResultService
 {
+    private readonly ApplicationDbContext _context = context;
+
     public async Task<Result<PollVotesResponse>> GetPollVotesAsync(int pollId, CancellationToken cancellationToken = default)
     {
         var pollVotes = await _context.Polls

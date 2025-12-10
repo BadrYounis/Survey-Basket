@@ -4,8 +4,10 @@ namespace SurveyBasket.Controllers;
 [Route("api/polls/{pollId}/[controller]")]
 [ApiController]
 [Authorize]
-public class QuestionsController(IQuestionService _questionService) : ControllerBase
+public class QuestionsController(IQuestionService questionService) : ControllerBase
 {
+    private readonly IQuestionService _questionService = questionService;
+
     [HttpGet("")]
     public async Task<IActionResult> GetAll([FromRoute] int pollId, CancellationToken cancellationToken)   // Get questions inside specific poll
     {

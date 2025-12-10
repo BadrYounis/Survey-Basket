@@ -1,8 +1,10 @@
 ﻿using SurveyBasket.Contracts.Polls;
 
 namespace SurveyBasket.Services;
-public class PollService(ApplicationDbContext _context) : IPollService
+public class PollService(ApplicationDbContext context) : IPollService
 {
+    private readonly ApplicationDbContext _context = context;
+
     public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken = default) =>
        await _context.Polls
         .AsNoTracking()

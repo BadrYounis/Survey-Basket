@@ -3,9 +3,12 @@ using SurveyBasket.Authentication;
 using System.Security.Cryptography;
 
 namespace SurveyBasket.Services;
-public class AuthService(UserManager<ApplicationUser> _usermanager, IJwtProvider _jwtProvider) : IAuthService
+public class AuthService(UserManager<ApplicationUser> usermanager, IJwtProvider jwtProvider) : IAuthService
 {
+    private readonly UserManager<ApplicationUser> _usermanager = usermanager;
+    private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly int _refreshTokenExpiryDays = 14;
+
     public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
     {
         //check user?
