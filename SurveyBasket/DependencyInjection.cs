@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using SurveyBasket.Authentication;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.IdentityModel.Tokens;
+using SurveyBasket.Authentication;
+using SurveyBasket.Settings;
 using System.Text;
 
 namespace SurveyBasket;
@@ -41,10 +43,15 @@ public static class DependencyInjection
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IVoteService, VoteService>();
         services.AddScoped<IResultService, ResultService>();
+        services.AddScoped<IEmailSender, EmailService>();
 
         //Add Exception Handling
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();  //Without calling it, ASP.NET Core does not automatically format errors using the Problem Details standard.
+
+        services.AddHttpContextAccessor();
+
+        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
 
         return services;
     }
@@ -76,7 +83,8 @@ public static class DependencyInjection
         IConfiguration _configuration)
     {
         services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
         //Jwt Configurations
         services.AddSingleton<IJwtProvider, JwtProvider>();  // We Need Only 1 Instance Through Lifetime Of Application
@@ -111,7 +119,14 @@ public static class DependencyInjection
                 ValidAudience = _jwtsettings?.Audience
             };
         });
-        
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequiredLength = 8;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+        });
+
         return services;
     }
 }

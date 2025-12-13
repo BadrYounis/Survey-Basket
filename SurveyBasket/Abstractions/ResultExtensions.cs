@@ -13,11 +13,8 @@ public static class ResultExtensions
         {
             {
                "errors", new[]{
-                   new
-                   {
-                       result.Error.Code,
-                       result.Error.Description
-                   }
+                    result.Error.Code,
+                    result.Error.Description
                }
             }
         };
