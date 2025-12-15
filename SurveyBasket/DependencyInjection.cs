@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +40,7 @@ public static class DependencyInjection
             .AddFluentValidationConfig();
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IPollService, PollService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IVoteService, VoteService>();
@@ -48,6 +50,7 @@ public static class DependencyInjection
         //Add Exception Handling
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();  //Without calling it, ASP.NET Core does not automatically format errors using the Problem Details standard.
+        services.AddBackgroundJobsConfig(configuration);
 
         services.AddHttpContextAccessor();
 
@@ -126,6 +129,19 @@ public static class DependencyInjection
             options.SignIn.RequireConfirmedEmail = true;
             options.User.RequireUniqueEmail = true;
         });
+
+        return services;
+    }
+    private static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services,
+       IConfiguration _configuration)
+    {
+        services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(_configuration.GetConnectionString("HangfireConnection")));
+
+        services.AddHangfireServer();
 
         return services;
     }

@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using SurveyBasket.Authentication;
 using SurveyBasket.Helpers;
 using System.Security.Cryptography;
 using System.Text;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace SurveyBasket.Services;
 public class AuthService(UserManager<ApplicationUser> usermanager,
@@ -200,6 +200,8 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
                     {"{{action_url}}", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}" }
             });
 
-        await _emailSender.SendEmailAsync(user.Email!, "Survey Basket: Email Confirmation", emailBody);
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "Survey Basket: Email Confirmation", emailBody));
+
+        await Task.CompletedTask;
     }
 }

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poll Notification</title>
+</head>
+<body style="margin:0; padding:0; background-color:#2b2b2b; font-family:Arial, Helvetica, sans-serif;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#2b2b2b; padding:40px 0;">
+        <tr>
+            <td align="center">
+
+                <!-- Main Container -->
+                <table width="600" cellpadding="0" cellspacing="0"
+                       style="background-color:#3a3a3a; border-radius:8px; padding:40px; color:#ffffff;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="font-size:14px; color:#bdbdbd; padding-bottom:20px;">
+                            Survey Basket
+                        </td>
+                    </tr>
+
+                    <!-- Greeting -->
+                    <tr>
+                        <td style="font-size:22px; font-weight:bold; padding-bottom:15px;">
+                            Hi {{name}},
+                        </td>
+                    </tr>
+
+                    <!-- Message -->
+                    <tr>
+                        <td style="font-size:15px; line-height:1.6; color:#dddddd; padding-bottom:20px;">
+                            A new poll has been published and we’d love to hear your opinion!
+                        </td>
+                    </tr>
+
+                    <!-- Poll Info Box -->
+                    <tr>
+                        <td style="background-color:#2f2f2f; border-radius:6px; padding:20px; margin-bottom:30px;">
+                            <p style="margin:0 0 10px 0; font-size:16px; color:#ffffff;">
+                                <strong>📊 Poll:</strong> {{pollTitle}}
+                            </p>
+                            <p style="margin:0; font-size:14px; color:#bdbdbd;">
+                                <strong>⏰ Ends at:</strong> {{ends_at}}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- CTA Button -->
+                    <tr>
+                        <td align="center" style="padding:30px 0;">
+                            <a href="{{url}}"
+                               style="background-color:#2ecc71; color:#ffffff; text-decoration:none;
+                        padding:14px 30px; border-radius:4px;
+                        font-size:15px; display:inline-block;">
+                                Vote Now
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Closing -->
+                    <tr>
+                        <td style="font-size:15px; color:#dddddd; padding-bottom:30px;">
+                            Thanks for participating,<br>
+                            <strong>Survey Basket team</strong>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!-- Footer -->
+                <table width="600" cellpadding="0" cellspacing="0" style="margin-top:20px; color:#bdbdbd;">
+                    <tr>
+                        <td align="center" style="font-size:12px; line-height:1.6;">
+                            Survey Basket<br>
+                            1234 Street Rd.<br>
+                            Cairo, Egypt
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
