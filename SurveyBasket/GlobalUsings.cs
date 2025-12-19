@@ -18,4 +18,5 @@ global using SurveyBasket.Contracts.Authentication;
 global using SurveyBasket.Contracts.Results;
 global using SurveyBasket.Abstractions;
 global using SurveyBasket.Errors;
-global using SurveyBasket.Extensions; 
+global using SurveyBasket.Extensions;
+global using SurveyBasket.Abstractions.Consts;

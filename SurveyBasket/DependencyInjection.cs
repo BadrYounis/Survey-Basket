@@ -86,7 +86,7 @@ public static class DependencyInjection
     private static IServiceCollection AddAuthConfig(this IServiceCollection services,
         IConfiguration _configuration)
     {
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
