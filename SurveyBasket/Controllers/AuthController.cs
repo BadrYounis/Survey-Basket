@@ -24,7 +24,7 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         var authResult = await _authService.GetRefreshTokenAsync(request.Token, request.RefreshToken, cancellationToken);
-
+    
         return authResult.IsSuccess ? Ok(authResult) : authResult.ToProblem();
         //: Problem(statusCode: StatusCodes.Status400BadRequest, title: authResult.Error.Code, detail: authResult.Error.Describtion);
     }
