@@ -90,6 +90,9 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+        services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+
         //Jwt Configurations
         services.AddSingleton<IJwtProvider, JwtProvider>();  // We Need Only 1 Instance Through Lifetime Of Application
 
