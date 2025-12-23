@@ -29,6 +29,9 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         if (await _usermanager.FindByEmailAsync(email) is not { } user)
             return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
+        if(user.IsDisabled)
+            return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+
         ///check password
         ///var isValidPassword = await _usermanager.CheckPasswordAsync(user, password);
         ///if (!isValidPassword)
@@ -36,7 +39,7 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         ///if (!user.EmailConfirmed)
         ///    return Result.Failure<AuthResponse>(UserErrors.EmailNotConfirmed);
 
-        var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: false, false);
+        var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: false, true);
 
         if (result.Succeeded)
         {
@@ -62,7 +65,13 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
             return Result.Success(authResponse);
         }
 
-        return Result.Failure<AuthResponse>(result.IsNotAllowed ? UserErrors.EmailNotConfirmed : UserErrors.InvalidCredentials);
+        var error = result.IsNotAllowed
+            ? UserErrors.EmailNotConfirmed
+            : result.IsLockedOut
+            ? UserErrors.LockedUser
+            : UserErrors.InvalidCredentials;
+
+        return Result.Failure<AuthResponse>(error);
     }
     public async Task<Result<AuthResponse>> GetRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
     {
@@ -73,7 +82,13 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         var user = await _usermanager.FindByIdAsync(userId);
         if (user is null)
             return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
-    
+
+        if (user.IsDisabled)
+            return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+
+        if (user.LockoutEnd > DateTime.UtcNow)
+            return Result.Failure<AuthResponse>(UserErrors.LockedUser);
+
         var userRefreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
         if (userRefreshToken is null)
             return Result.Failure<AuthResponse>(UserErrors.RefreshTokenNotFound);

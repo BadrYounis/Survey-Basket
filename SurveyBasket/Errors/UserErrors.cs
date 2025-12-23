@@ -4,6 +4,12 @@ public static class UserErrors
     public static readonly Error InvalidCredentials =
         new("User.InvalidCredentials", "Invalid Credentials", StatusCodes.Status401Unauthorized);
 
+    public static readonly Error DisabledUser =
+        new("User.DisabledUser", "Disabled user, Please contact your administrator", StatusCodes.Status401Unauthorized);
+
+    public static readonly Error LockedUser =
+        new("User.LockedUser", "Locked user, Please contact your administrator", StatusCodes.Status401Unauthorized);
+
     public static readonly Error UserNotFound =
         new("User.UserNotFound", "No User Found With The Given ID", StatusCodes.Status401Unauthorized);
 
