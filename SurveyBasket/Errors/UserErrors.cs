@@ -27,4 +27,7 @@ public static class UserErrors
 
     public static readonly Error DuplicatedConfirmation =
         new("User.DuplicatedConfirmation", "This Email Already Confirmed Before", StatusCodes.Status400BadRequest);
+
+    public static readonly Error InvalidRoles =
+        new("User.InvalidRoles", "Invalid Roles", StatusCodes.Status400BadRequest);
 }
