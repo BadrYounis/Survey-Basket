@@ -46,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IVoteService, VoteService>();
         services.AddScoped<IResultService, ResultService>();
+        services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IEmailSender, EmailService>();
 
         //Add Exception Handling
