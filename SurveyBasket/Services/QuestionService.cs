@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Hybrid;
+using System.Linq.Dynamic.Core;
 using SurveyBasket.Contracts.Answers;
+using SurveyBasket.Contracts.Common;
 using SurveyBasket.Contracts.Questions;
 
 namespace SurveyBasket.Services;
@@ -10,38 +12,57 @@ public class QuestionService(
     private const string _cachePrefix = "availableQuestions";
     private readonly ApplicationDbContext _context = context;
     private readonly HybridCache _hybridCache = hybridCache;
-    public async Task<Result<IEnumerable<QuestionResponse>>> GetAllAsync(int pollId, CancellationToken cancellationToken = default)
+    public async Task<Result<PaginatedList<QuestionResponse>>> GetAllAsync(int pollId, RequestFilters filters, CancellationToken cancellationToken = default)
     {
         //Check if the pollId sent by user is already exists in database or not
         var pollIsExists = await _context.Polls.AnyAsync(x => x.Id == pollId, cancellationToken);
         if (!pollIsExists)
-            return Result.Failure<IEnumerable<QuestionResponse>>(PollErrors.PollNotFound);
+            return Result.Failure<PaginatedList<QuestionResponse>>(PollErrors.PollNotFound);
 
-        var questions = await _context.Questions
-            .Where(x => x.PollId == pollId)
-            .Include(x => x.Answers)
-            //.Select(q => new QuestionResponse(
-            //    q.Id,
-            //    q.Content,
-            //    q.Answers.Select(a => new AnswerResponse(a.Id, a.Content))))
-            .ProjectToType<QuestionResponse>()
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var query = _context.Questions
+            .Where(x => x.PollId == pollId);
 
-        return Result.Success<IEnumerable<QuestionResponse>>(questions);
+        if (!string.IsNullOrEmpty(filters.SearchValue))
+        {
+            query = query.Where(x => x.Content.Contains(filters.SearchValue));
+        }
+
+        if (!string.IsNullOrEmpty(filters.SortColumn))
+        {
+            query = query.OrderBy($"{filters.SortColumn} {filters.SortDirection}");
+        }
+
+        var source = query
+                        .Include(x => x.Answers)
+                        .ProjectToType<QuestionResponse>()
+                        .AsNoTracking();
+
+        ///var query = _context.Questions
+        ///    .Where(x => x.PollId == pollId && (string.IsNullOrEmpty(filters.SearchValue) || x.Content.Contains(filters.SearchValue)))
+        ///    .Include(x => x.Answers)
+        ///    //.Select(q => new QuestionResponse(
+        ///    //    q.Id,
+        ///    //    q.Content,
+        ///    //    q.Answers.Select(a => new AnswerResponse(a.Id, a.Content))))
+        ///    .ProjectToType<QuestionResponse>()
+        ///    .AsNoTracking();
+
+        var questions = await PaginatedList<QuestionResponse>.CreateAsync(source, filters.PageNumber, filters.PageSize);
+
+        return Result.Success(questions);
     }
     public async Task<Result<IEnumerable<QuestionResponse>>> GetAvailableAsync(int pollId, string userId, CancellationToken cancellationToken = default)
     {
         //Checks if user votes for this poll before or not
         var hasVote = await _context.Votes.AnyAsync(x => x.PollId == pollId && x.UserId == userId, cancellationToken);
-        
+
         if (hasVote)
             return Result.Failure<IEnumerable<QuestionResponse>>(VoteErrors.DuplicatedVote);
-        
+
         //Checks if poll available for voting or not
         var pollIsExists = await _context.Polls.AnyAsync(x => x.Id == pollId && x.IsPublished
             && x.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow) && x.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow), cancellationToken);
-        
+
         if (!pollIsExists)
             return Result.Failure<IEnumerable<QuestionResponse>>(PollErrors.PollNotFound);
 
