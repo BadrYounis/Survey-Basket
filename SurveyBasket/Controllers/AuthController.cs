@@ -1,4 +1,6 @@
-﻿namespace SurveyBasket.Controllers;
+﻿using Microsoft.AspNetCore.RateLimiting;
+
+namespace SurveyBasket.Controllers;
 [Route("[controller]")]
 [ApiController]
 public class AuthController(IAuthService authService, ILogger<AuthController> logger) : ControllerBase
@@ -79,6 +81,7 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
     }
 
     [HttpGet("test")]
+    [EnableRateLimiting("concurrency")]
     public IActionResult test()
     {
         Thread.Sleep(6000);
