@@ -1,6 +1,8 @@
 using Hangfire;
 using Hangfire.Dashboard;
 using HangfireBasicAuthenticationFilter;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,5 +53,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseExceptionHandler();
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
