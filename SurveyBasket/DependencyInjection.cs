@@ -1,11 +1,13 @@
 ﻿using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.Authentication;
 using SurveyBasket.Health;
 using SurveyBasket.Settings;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace SurveyBasket;
 public static class DependencyInjection
@@ -62,6 +64,18 @@ public static class DependencyInjection
             .AddSqlServer(name: "Database", connectionString: connectionString)
             .AddHangfire(options => { options.MinimumAvailableServers = 1; })
             .AddCheck<MailProviderHealthCheck>(name: "Mail Provider");
+
+        services.AddRateLimiter(rateLimiterOptions =>
+        {
+            rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            rateLimiterOptions.AddConcurrencyLimiter("concurrency", options =>
+            {
+                options.PermitLimit = 2;
+                options.QueueLimit = 1;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            });
+        });
 
         return services;
     }
