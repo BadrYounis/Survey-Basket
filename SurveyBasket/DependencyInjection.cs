@@ -77,6 +77,17 @@ public static class DependencyInjection
                         Window = TimeSpan.FromSeconds(20)
                     }
                 )
+            ); 
+
+            rateLimiterOptions.AddPolicy("userLimit", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.User.GetUserId(),
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 2,
+                        Window = TimeSpan.FromSeconds(20)
+                    }
+                )
             );
 
             #region ConcurrencyLimiter
