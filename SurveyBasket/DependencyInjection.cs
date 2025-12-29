@@ -22,9 +22,9 @@ public static class DependencyInjection
         services.AddCors(options =>
             options.AddDefaultPolicy(builder =>
                 builder
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>()!)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>()!)
             )
         );
 
@@ -78,15 +78,37 @@ public static class DependencyInjection
             ///}); 
             #endregion
 
-            rateLimiterOptions.AddTokenBucketLimiter("token", options =>
+            #region TokenBucketLimiter
+            ///rateLimiterOptions.AddTokenBucketLimiter("token", options =>
+            ///{
+            ///    options.TokenLimit = 2;
+            ///    options.QueueLimit = 1;
+            ///    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            ///    options.ReplenishmentPeriod = TimeSpan.FromSeconds(30);
+            ///    options.TokensPerPeriod = 2;
+            ///    options.AutoReplenishment = true;
+            ///}); 
+            #endregion
+
+            #region FixedWindowLimiter
+            ///rateLimiterOptions.AddFixedWindowLimiter("fixed", options =>
+            ///{
+            ///    options.PermitLimit = 2;
+            ///    options.Window = TimeSpan.FromSeconds(20);
+            ///    options.QueueLimit = 1;
+            ///    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;                
+            ///}); 
+            #endregion
+
+            rateLimiterOptions.AddSlidingWindowLimiter("sliding", options =>
             {
-                options.TokenLimit = 2;
+                options.PermitLimit = 2;
+                options.Window = TimeSpan.FromSeconds(20);
+                options.SegmentsPerWindow = 2;
                 options.QueueLimit = 1;
-                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.ReplenishmentPeriod = TimeSpan.FromSeconds(30);
-                options.TokensPerPeriod = 2;
-                options.AutoReplenishment = true;
-            });
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;                
+            }); 
+
         });
 
         return services;
