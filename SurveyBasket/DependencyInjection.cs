@@ -70,8 +70,12 @@ public static class DependencyInjection
 
         services.AddApiVersioning(options =>
         {
-            options.ApiVersionReader = new UrlSegmentApiVersionReader();
-        }).AddApiExplorer(options =>
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+        })
+        .AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'V";
             options.SubstituteApiVersionInUrl = true;

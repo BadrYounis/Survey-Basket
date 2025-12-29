@@ -4,9 +4,9 @@ using SurveyBasket.Contracts.Polls;
 
 namespace SurveyBasket.Controllers;
 
-[ApiVersion(1)]
+[ApiVersion(1, Deprecated = true)]
 [ApiVersion(2)]
-[Route("api/v{v:apiVersion}/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class PollsController(IPollService pollService) : ControllerBase
 {
