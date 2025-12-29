@@ -1,7 +1,6 @@
 ﻿using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.Authentication;
 using SurveyBasket.Health;
@@ -69,6 +68,17 @@ public static class DependencyInjection
         {
             rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
+            rateLimiterOptions.AddPolicy("ipLimit", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 2,
+                        Window = TimeSpan.FromSeconds(20)
+                    }
+                )
+            );
+
             #region ConcurrencyLimiter
             ///rateLimiterOptions.AddConcurrencyLimiter("concurrency", options =>
             ///{
@@ -100,14 +110,16 @@ public static class DependencyInjection
             ///}); 
             #endregion
 
-            rateLimiterOptions.AddSlidingWindowLimiter("sliding", options =>
-            {
-                options.PermitLimit = 2;
-                options.Window = TimeSpan.FromSeconds(20);
-                options.SegmentsPerWindow = 2;
-                options.QueueLimit = 1;
-                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;                
-            }); 
+            #region SlidingWindowLimiter
+            ///rateLimiterOptions.AddSlidingWindowLimiter("sliding", options =>
+            ///{
+            ///    options.PermitLimit = 2;
+            ///    options.Window = TimeSpan.FromSeconds(20);
+            ///    options.SegmentsPerWindow = 2;
+            ///    options.QueueLimit = 1;
+            ///    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;                
+            ///}); 
+            #endregion
 
         });
 
