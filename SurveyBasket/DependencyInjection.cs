@@ -67,6 +67,8 @@ public static class DependencyInjection
 
         services.AddRateLimitingConfig();
 
+        services.AddApiVersioning();
+
         return services;
     }
     private static IServiceCollection AddSwaggerServices(this IServiceCollection services)
