@@ -2,6 +2,9 @@
 using SurveyBasket.Contracts.Questions;
 
 namespace SurveyBasket.Controllers;
+
+[ApiVersion(1, Deprecated = true)]
+[ApiVersion(2)]
 [Route("api/polls/{pollId}/[controller]")]
 [ApiController]
 public class QuestionsController(IQuestionService questionService) : ControllerBase

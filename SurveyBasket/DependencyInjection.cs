@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+﻿using Asp.Versioning.ApiExplorer;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.Authentication;
 using SurveyBasket.Health;
+using SurveyBasket.OpenApiTransformers;
 using SurveyBasket.Settings;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -38,7 +39,7 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services
-            .AddSwaggerServices()
+            //.AddSwaggerServices()
             .AddMapsterConfig()
             .AddFluentValidationConfig();
 
@@ -77,19 +78,39 @@ public static class DependencyInjection
         })
         .AddApiExplorer(options =>
         {
-            options.GroupNameFormat = "'v'V";
+            options.GroupNameFormat = "'v'V";    
             options.SubstituteApiVersionInUrl = true;
         });
 
-        return services;
-    }
-    private static IServiceCollection AddSwaggerServices(this IServiceCollection services)
-    {
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services
+            .AddEndpointsApiExplorer()
+            .AddOpenApiServices();
 
         return services;
     }
+    private static IServiceCollection AddOpenApiServices(this IServiceCollection services)
+    {
+        var serviceProvider = services.BuildServiceProvider();
+        var apiVersionDescriptionProvider = serviceProvider.GetRequiredService<IApiVersionDescriptionProvider>();
+
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+        {
+            services.AddOpenApi(description.GroupName, options =>
+            {
+                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();    //Authentication for all versions
+                options.AddDocumentTransformer(new ApiVersioningTransformer(description));  //assign the version that contains the details of the version
+            });
+        }
+
+        return services;
+    }
+
+    //private static IServiceCollection AddSwaggerServices(this IServiceCollection services)
+    //{
+    //    services.AddSwaggerGen();
+    //
+    //    return services;
+    //}
     private static IServiceCollection AddMapsterConfig(this IServiceCollection services)
     {
         var mappingConfig = TypeAdapterConfig.GlobalSettings;

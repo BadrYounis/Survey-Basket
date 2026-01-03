@@ -1,5 +1,7 @@
 ﻿namespace SurveyBasket.Controllers;
 
+[ApiVersion(1, Deprecated = true)]
+[ApiVersion(2)]
 [Route("api/polls/{pollId}/[controller]")]
 [ApiController]
 [HasPermission(Permissions.Results)]

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.RateLimiting;
 
 namespace SurveyBasket.Controllers;
+
+[ApiVersion(1, Deprecated = true)]
+[ApiVersion(2)]
 [Route("[controller]")]
 [ApiController]
 [EnableRateLimiting(RateLimiters.IpLimiter)]
