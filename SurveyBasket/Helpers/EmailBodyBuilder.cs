@@ -8,9 +8,9 @@ public static class EmailBodyBuilder
         var body = streamReader.ReadToEnd();   //has all html that exists in template
         streamReader.Close();
 
-        foreach (var value in templateValues)        
+        foreach (var value in templateValues)
             body = body.Replace(value.Key, value.Value);
-       
+
         return body;
     }
 }

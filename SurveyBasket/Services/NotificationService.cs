@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using SurveyBasket.Helpers;
 
 namespace SurveyBasket.Services;
@@ -31,12 +30,11 @@ public class NotificationService(
                 .ToListAsync();
         }
 
-        //TODO: Select Members Only
-        var users = await _userManager.Users.ToListAsync();
+        var users = await _userManager.GetUsersInRoleAsync(DefaultRoles.Member.Name);
 
         var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
-        foreach(var poll in polls)
+        foreach (var poll in polls)
         {
             foreach (var user in users)
             {

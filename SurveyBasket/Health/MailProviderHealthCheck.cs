@@ -9,8 +9,8 @@ public class MailProviderHealthCheck(IOptions<MailSettings> mailSettings) : IHea
     private readonly MailSettings _mailSettings = mailSettings.Value;
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-		try
-		{
+        try
+        {
             using var client = new SmtpClient();
 
             client.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
@@ -18,8 +18,8 @@ public class MailProviderHealthCheck(IOptions<MailSettings> mailSettings) : IHea
 
             return await Task.FromResult(HealthCheckResult.Healthy());
         }
-		catch (Exception exception)
-		{
+        catch (Exception exception)
+        {
             return await Task.FromResult(HealthCheckResult.Unhealthy(exception: exception));
         }
     }

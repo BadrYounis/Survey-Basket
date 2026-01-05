@@ -29,7 +29,7 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         if (await _usermanager.FindByEmailAsync(email) is not { } user)
             return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
-        if(user.IsDisabled)
+        if (user.IsDisabled)
             return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
 
         ///check password
@@ -78,7 +78,7 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         var userId = _jwtProvider.ValidateToken(token);
         if (userId is null)
             return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
-    
+
         var user = await _usermanager.FindByIdAsync(userId);
         if (user is null)
             return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
@@ -92,7 +92,7 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         var userRefreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
         if (userRefreshToken is null)
             return Result.Failure<AuthResponse>(UserErrors.RefreshTokenNotFound);
-    
+
         userRefreshToken.RevokedOn = DateTime.UtcNow;
 
         //Select Roles and Permissions
@@ -101,16 +101,16 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
         var (newToken, expiresIn) = _jwtProvider.GenerateToken(user, userRoles, userPermissions);
         var newRefreshToken = GenerateRefreshToken();
         var refreshTokenExpiration = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
-    
+
         // Save Into Database
         user.RefreshTokens.Add(new RefreshToken
         {
             Token = newRefreshToken,
             ExpiresOn = refreshTokenExpiration
         });
-    
+
         await _usermanager.UpdateAsync(user);
-    
+
         //return new AuthResponse()
         var response = new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, newToken, expiresIn, newRefreshToken, refreshTokenExpiration);
         return Result.Success(response);
@@ -184,7 +184,7 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
 
         if (result.Succeeded)
         {
-            await _usermanager.AddToRoleAsync(user, DefaultRoles.Member);
+            await _usermanager.AddToRoleAsync(user, DefaultRoles.Member.Name);
             return Result.Success();
         }
 
@@ -217,7 +217,7 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
             return Result.Success();
 
         if (!user.EmailConfirmed)
-            return Result.Failure(UserErrors.EmailNotConfirmed);
+            return Result.Failure(UserErrors.EmailNotConfirmed with { StatusCode = StatusCodes.Status400BadRequest });
 
         var code = await _usermanager.GeneratePasswordResetTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -284,7 +284,6 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
 
         await Task.CompletedTask;
     }
-    
     private async Task<(IEnumerable<string> roles, IEnumerable<string> permissions)> GetUserRolesAndPermissions(ApplicationUser user, CancellationToken cancellationToken)
     {
         var userRoles = await _usermanager.GetRolesAsync(user);    //Roles Names Not Ids
@@ -309,5 +308,5 @@ public class AuthService(UserManager<ApplicationUser> usermanager,
                                      .ToListAsync(cancellationToken);
 
         return (userRoles, userPermissions);
-    }  
+    }
 }

@@ -1,5 +1,5 @@
 ﻿namespace SurveyBasket.Errors;
-public static class QuestionErrors
+public record QuestionErrors
 {
     public static readonly Error QuestionNotFound =
         new("Question.QuestionNotFound", "No question Found With The Given ID", StatusCodes.Status404NotFound);

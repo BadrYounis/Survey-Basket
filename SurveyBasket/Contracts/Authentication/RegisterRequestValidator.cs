@@ -1,6 +1,4 @@
-﻿using SurveyBasket.Abstractions.Consts;
-
-namespace SurveyBasket.Contracts.Authentication;
+﻿namespace SurveyBasket.Contracts.Authentication;
 public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
     public RegisterRequestValidator()
@@ -16,7 +14,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
         RuleFor(x => x.FirstName)
           .NotEmpty()
-          .Length(3,100);
+          .Length(3, 100);
 
         RuleFor(x => x.LastName)
            .NotEmpty()

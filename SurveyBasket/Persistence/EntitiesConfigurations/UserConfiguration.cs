@@ -15,17 +15,17 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
         //Default Data
         builder.HasData(new ApplicationUser
         {
-            Id = DefaultUsers.AdminId,
+            Id = DefaultUsers.Admin.Id,
             FirstName = "Survey Basket",
             LastName = "Admin",
-            UserName = DefaultUsers.AdminEmail,
-            NormalizedUserName = DefaultUsers.AdminEmail.ToUpper(),
-            Email = DefaultUsers.AdminEmail,
-            NormalizedEmail = DefaultUsers.AdminEmail.ToUpper(),
-            SecurityStamp = DefaultUsers.AdminSecurityStamp,
-            ConcurrencyStamp = DefaultUsers.AdminConcurrencyStamp,
+            UserName = DefaultUsers.Admin.Email,
+            NormalizedUserName = DefaultUsers.Admin.Email.ToUpper(),
+            Email = DefaultUsers.Admin.Email,
+            NormalizedEmail = DefaultUsers.Admin.Email.ToUpper(),
+            SecurityStamp = DefaultUsers.Admin.SecurityStamp,
+            ConcurrencyStamp = DefaultUsers.Admin.ConcurrencyStamp,
             EmailConfirmed = true,                                          //Important
-            PasswordHash = DefaultUsers.AdminPassword
+            PasswordHash = DefaultUsers.Admin.Password
         });
     }
 }

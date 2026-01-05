@@ -7,7 +7,7 @@ namespace SurveyBasket.Controllers;
 [ApiVersion(2)]
 [Route("api/polls/{pollId}/vote")]
 [ApiController]
-[Authorize(Roles = DefaultRoles.Member)]
+[Authorize(Roles = DefaultRoles.Member.Name)]
 [EnableRateLimiting(RateLimiters.Concurrency)]
 public class VotesController(IQuestionService _questionService, IVoteService _voteService) : ControllerBase
 {

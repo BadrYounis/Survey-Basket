@@ -20,7 +20,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
     [MapToApiVersion(1)]
     [HttpGet("current")]
-    [Authorize(Roles = DefaultRoles.Member)]
+    [Authorize(Roles = DefaultRoles.Member.Name)]
     [EnableRateLimiting(RateLimiters.UserLimiter)]
     public async Task<IActionResult> GetCurrentV1(CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class PollsController(IPollService pollService) : ControllerBase
 
     [MapToApiVersion(2)]
     [HttpGet("current")]
-    [Authorize(Roles = DefaultRoles.Member)]
+    [Authorize(Roles = DefaultRoles.Member.Name)]
     [EnableRateLimiting(RateLimiters.UserLimiter)]
     public async Task<IActionResult> GetCurrentV2(CancellationToken cancellationToken)
     {
@@ -77,7 +77,7 @@ public class PollsController(IPollService pollService) : ControllerBase
         //: Problem(statusCode: StatusCodes.Status404NotFound, title: result.Error.Code, detail: result.Error.Describtion);
     }
 
-    [HttpPut("{id}/togglePublish")]
+    [HttpPut("{id}/toggle-publish")]
     [HasPermission(Permissions.UpdatePolls)]
     public async Task<IActionResult> TogglePublish([FromRoute] int id, CancellationToken cancellationToken)
     {

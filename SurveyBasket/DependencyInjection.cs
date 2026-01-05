@@ -60,7 +60,10 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+        services.AddOptions<MailSettings>()
+            .BindConfiguration(nameof(MailSettings))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         services.AddHealthChecks()
             .AddSqlServer(name: "Database", connectionString: connectionString)
@@ -78,7 +81,7 @@ public static class DependencyInjection
         })
         .AddApiExplorer(options =>
         {
-            options.GroupNameFormat = "'v'V";    
+            options.GroupNameFormat = "'v'V";
             options.SubstituteApiVersionInUrl = true;
         });
 

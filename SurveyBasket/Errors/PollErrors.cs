@@ -1,5 +1,5 @@
 ﻿namespace SurveyBasket.Errors;
-public static class PollErrors
+public record PollErrors
 {
     public static readonly Error PollNotFound =
         new("Poll.NotFound", "No Poll Was Found With The Given ID", StatusCodes.Status404NotFound);
