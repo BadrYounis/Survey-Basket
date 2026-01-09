@@ -98,8 +98,4 @@ Follow these steps to set up the project locally.
 
 **Badr Younis**
 
-- GitHub: [@badryounis14](https://github.com/badryounis14)
-
----
-
-Copyright © 2026 Badr Younis. All Rights Reserved.
+- GitHub: [@BadrYounis](https://github.com/BadrYounis)
